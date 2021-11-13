@@ -1,5 +1,6 @@
 import { IndicatorInfo, queries } from "../src/sparql/queries";
 import {
+  Label,
   Legend,
   Line,
   LineChart,
@@ -13,6 +14,7 @@ import runSparql, {
   WikidataSearchResult,
   searchTerm,
 } from "../src/service/wikidataSearch";
+import { stackAge, stackMonth, stackYear } from "../src/sparql/stack";
 
 import AsyncSelect from "react-select/async";
 import { FormatOptionLabelMeta } from "react-select";
@@ -29,7 +31,6 @@ export async function indicatorSearch(
     return [{ error: "Type more..." } as unknown as IndicatorInfo];
   }
   try {
-    console.log(queries);
     const ret = queries.filter((element) => element.name.includes(searchTerm));
     return ret;
   } catch (e) {
@@ -48,7 +49,6 @@ export async function countrySearch(
     }
     const countries = await searchTerm(name, "en");
     // const ret = countries as SearchResult[];
-    console.log(name, "countrySearch", countries);
     return countries;
   } catch (e) {
     console.error("authorsSearch", e);
@@ -78,28 +78,6 @@ function IndicatorOption(
     </>
   );
 }
-const defaultCountries = [
-  {
-    short_name: "United States",
-    country_code: "USA",
-  },
-  {
-    short_name: "Germany",
-    country_code: "DEU",
-  },
-  {
-    short_name: "India",
-    country_code: "IND",
-  },
-  {
-    short_name: "China",
-    country_code: "CHN",
-  },
-  {
-    short_name: "Korea",
-    country_code: "KOR",
-  },
-];
 // const defaultIndicator = {
 //   indicator_code: "IT.NET.USER.ZS",
 //   topic: "Infrastructure: Communications",
@@ -129,9 +107,9 @@ const COLORS = [
 
 export const MainChart: React.FC = () => {
   const [countries, setCountries] = useState([]);
-  const [indicator, setIndicator] = useState();
+  const [indicator, setIndicator] = useState<IndicatorInfo>();
   const [data, setData] = useState(
-    null as null | { series: string[]; data: any[] }
+    null as null | { series: any[]; data: any[] }
   );
   async function plot() {
     if (countries.length === 0 || !indicator) {
@@ -140,36 +118,29 @@ export const MainChart: React.FC = () => {
     }
     console.log("plot", countries, indicator);
     const requestedIds = countries.map((c) => c.id);
-    const query = indicator.query.replace("$1", requestedIds.join(" wd:"));
+    let query = indicator.query.replace("$1", requestedIds.join(" wd:"));
+    for (let prop_id in indicator.props) {
+      console.log("prop_id", prop_id);
+      query = query.replaceAll("$" + prop_id, indicator.props[prop_id]);
+    }
+    console.log("query", query);
     //  queries
     //   .find((ind) => ind.code === indicator.)
     //   ?.query.replace("$1", requestedId);
     const res = await runSparql(query);
     console.log("res", res);
-    // const { db } = await store.ready;
-    // const res = (await db.query(
-    //   "select short_name, year, value from wdi_data join wdi_country using (country_code) where country_code in (select value from json_each(?)) and indicator_code = ? order by year asc",
-    //   [
-    //     JSON.stringify(countries.map((c) => c.country_code)),
-    //     indicator.indicator_code,
-    //   ]
-    // )) as {
-    //   short_name: string;
-    //   year: number;
-    //   value: number;
-    // }[];
-    // const entries = new Map<number, Record<string, number>>();
-    // for (const ele of res) {
-    //   let y = entries.get(ele.year);
-    //   if (!y) {
-    //     y = { year: ele.year };
-    //     entries.set(ele.year, y);
-    //   }
-    //   y[ele.short_name] = ele.value;
-    // }
+    let data = [];
+    if (indicator.time == "year") {
+      data = stackYear(res);
+    } else if (indicator.time == "month") {
+      data = stackMonth(res);
+    } else if (indicator.time == "age") {
+      data = stackAge(res);
+    }
+    console.log(data);
     setData({
-      series: ["year"],
-      data: res,
+      series: countries,
+      data: data,
     });
   }
   useEffect(() => {
@@ -191,7 +162,7 @@ export const MainChart: React.FC = () => {
         loadOptions={(e) => {
           return countrySearchDebounce(e);
         }}
-        getOptionLabel={(e) => e.label}
+        getOptionLabel={(e) => e.label + " (" + e.description + ")"}
         // formatOptionLabel={IndicatorOption}
         getOptionValue={(e) => e.id}
         onChange={(e) => setCountries(e)}
@@ -220,20 +191,22 @@ export const MainChart: React.FC = () => {
         >
           <LineChart data={data.data}>
             <XAxis dataKey="year" />
-            <YAxis dataKey="value" />
+            <YAxis />
             <Tooltip />
             <Legend />
             {data.series.map((s, i) => (
               <Line
-                key={s}
+                key={s.id}
                 type="monotone"
-                dataKey="value"
-                name={s}
+                dataKey={s.id}
+                name={s.label}
                 // fill={COLORS[i % COLORS.length]}
                 stroke={COLORS[i % COLORS.length]}
                 connectNulls
                 strokeWidth={3}
-              />
+              >
+                <Label>Test</Label>
+              </Line>
             ))}
           </LineChart>
         </ResponsiveContainer>

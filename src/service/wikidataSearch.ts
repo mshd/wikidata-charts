@@ -63,7 +63,7 @@ export const searchTerm = async (term: string, languageCode: string) => {
   return search;
 };
 
-export default async function runSparql(query: string): Promise<string> {
+export default async function runSparql(query: string): Promise<any[]> {
   const url = await new Promise<string>((resolve, reject) => {
     try {
       const url = wdk.sparqlQuery(query);
