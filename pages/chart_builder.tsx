@@ -15,7 +15,12 @@ import runSparql, {
   WikidataSearchResult,
   searchTerm,
 } from "../src/service/wikidataSearch";
-import { stackAge, stackMonth, stackYear } from "../src/sparql/stack";
+import {
+  stackAge,
+  stackFemaleProportion,
+  stackMonth,
+  stackYear,
+} from "../src/sparql/stack";
 
 import AsyncSelect from "react-select/async";
 // import ResponsiveContainer from "../components/ResponsiveContainer";
@@ -26,6 +31,9 @@ import debounce from "debounce-promise";
 export async function indicatorSearch(
   searchTerm: string
 ): Promise<IndicatorInfo[] | undefined> {
+  if (searchTerm.length == 0) {
+    return queries;
+  }
   if (searchTerm.length < 3) {
     return [{ error: "Type more..." } as unknown as IndicatorInfo];
   }
@@ -134,6 +142,8 @@ export const MainChart: React.FC = () => {
       data = stackMonth(res);
     } else if (indicator.time == "age") {
       data = stackAge(res);
+    } else if (indicator.time == "female") {
+      data = stackFemaleProportion(requestedIds, res);
     }
     console.log(data);
     setData({

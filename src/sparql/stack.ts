@@ -49,3 +49,32 @@ export const stackAge = function (res, start = 18, end = 90) {
   }
   return data;
 };
+
+export const stackFemaleProportion = function (
+  ids,
+  res,
+  start = 2010,
+  end = 2022
+) {
+  const data = [];
+  console.log(res);
+  for (let i = start; i < end; i++) {
+    let values = {};
+    let findYear = res.filter((r) => r.year === i);
+    ids.forEach((id) => {
+      let female = findYear.filter(
+        (r) => id == r.search.value && r.genderLabel == "female"
+      );
+      let male = findYear.filter(
+        (r) => id == r.search.value && r.genderLabel == "male"
+      );
+      if (male.length && female.length) {
+        let female_count = female[0].value;
+        let male_count = male[0].value;
+        values[id] = female_count / (male_count + female_count);
+      }
+    });
+    data.push({ year: i, ...values });
+  }
+  return data;
+};

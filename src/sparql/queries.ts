@@ -59,7 +59,7 @@ ORDER BY ?age`,
 WHERE
 {
   VALUES ?search {wd:$1}
-  ?item wdt:P31 wd:$i.
+  ?item wdt:P31/wdt:P279* wd:$i.
   ?item wdt:$s ?search;
           p:$d/psv:$d [
                 wikibase:timePrecision ?precision ;
@@ -92,6 +92,27 @@ WHERE
 }
 GROUP BY ?yearmonth ?search ?searchLabel
 ORDER BY ?yearmonth`,
+  byGender: `SELECT ?search ?searchLabel ?year (COUNT(?item) as ?value) ?genderLabel
+WHERE
+{
+  VALUES ?search {wd:$1}
+  ?podcast wdt:P5030 ?item.
+  ?item wdt:P21 ?gender.
+  ?podcast wdt:P31/wdt:P279* wd:Q61855877.
+  ?podcast wdt:P179 ?search;
+          p:P577/psv:P577 [
+                wikibase:timePrecision ?precision ;
+                wikibase:timeValue ?date ;
+              ] .
+  BIND(YEAR(?date) as ?year).
+  FILTER( ?date >= "2000-01-01T00:00:00"^^xsd:dateTime )
+  FILTER( ?precision >= "9"^^xsd:integer ) # precision of at least year
+  SERVICE wikibase:label {
+    bd:serviceParam wikibase:language "en"
+  }
+}
+GROUP BY ?year ?search ?searchLabel ?genderLabel
+ORDER BY ?year`,
 };
 export const queries: IndicatorInfo[] = [
   {
@@ -126,6 +147,17 @@ export const queries: IndicatorInfo[] = [
     query: superQueries.byYear,
   },
   {
+    code: "EPISODES_FEMALE_GUEST_PROP",
+    name: "podcast episodes female guest proportion",
+    props: {
+      s: PART_OF_SERIES,
+      i: "Q61855877", //podcast episode
+      d: PUBLISHED_DATE,
+    },
+    time: "female",
+    query: superQueries.byGender,
+  },
+  {
     code: "BOOKS_YEARLY",
     name: "books published by year by author",
     props: {
@@ -156,6 +188,17 @@ export const queries: IndicatorInfo[] = [
     },
     time: "year",
 
+    query: superQueries.byYear,
+  },
+  {
+    code: "MOVIES_YEARLY_COUNTRY",
+    name: "movies published by origin country",
+    props: {
+      s: "P495", //country of origin
+      i: "Q11424", //film
+      d: PUBLISHED_DATE,
+    },
+    time: "year",
     query: superQueries.byYear,
   },
   {
