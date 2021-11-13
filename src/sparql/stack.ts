@@ -1,4 +1,11 @@
-export const stackYear = function (res, start = 2010, end = 2022) {
+//@ts-nocheck
+import { SparqlResult } from "./queries";
+
+export const stackYear = function (
+  res: SparqlResult[],
+  start = 2010,
+  end = 2022
+) {
   const data = [];
   for (let i = start; i < end; i++) {
     let values = {};
@@ -29,7 +36,7 @@ export const stackMonth = function (res, start = 2010, end = 2022) {
   return data;
 };
 
-export const stackAge = function (res, start = 0, end = 120) {
+export const stackAge = function (res, start = 18, end = 90) {
   const data = [];
   for (let i = start; i < end; i++) {
     let values = {};

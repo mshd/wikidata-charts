@@ -1,15 +1,20 @@
 type PROP_TYPE = {
-  s?: string;
-  // p?: string;
-  i?: string;
-  d?: string;
+  [key: string]: string;
 };
+
+// type PROP_TYPE: PROP_TYPE_TYPE = {
+//   s?: string;
+//   // p?: string;
+//   i?: string;
+//   d?: string;
+// };
 export type IndicatorInfo = {
   code?: string;
   name: string;
   query: string;
   props: PROP_TYPE;
   time?: string;
+  fullQuery?: string;
   // indicator_name: string;
   // short_definition: string | null;
   // long_definition: string;
@@ -17,6 +22,14 @@ export type IndicatorInfo = {
   // development_relevance: string;
   // snippet: string;
   // error?: true;
+};
+type SparqlValue = {
+  value: string;
+  label: string;
+};
+export type SparqlResult = {
+  search?: SparqlValue;
+  [key: string]: any;
 };
 const PUBLISHED_DATE = "P577";
 const POINT_IN_TIME = "P585";

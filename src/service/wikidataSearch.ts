@@ -1,5 +1,6 @@
 // import { DataSource } from "wikibase/getWikibaseInstance";
 import axios from "axios";
+//@ts-ignore
 import wdk from "wikidata-sdk";
 
 // import serviceSuccessInterceptor from "./serviceSuccessInterceptor";
@@ -33,7 +34,7 @@ type WikidataSearchResponse = {
   };
   servedby: string;
 };
-function serviceSuccessInterceptor(res) {
+function serviceSuccessInterceptor(res: any) {
   return res.data;
 }
 

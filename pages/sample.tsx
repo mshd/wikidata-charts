@@ -12,8 +12,6 @@ import {
   YAxis,
 } from "recharts";
 
-import { render } from "react-dom";
-
 const data = [
   { name: "" },
   { name: "Monday", uv: 265, pv: 800 },
