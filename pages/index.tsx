@@ -1,5 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
+import Link from "next/link";
 import type { NextPage } from "next";
 import styles from "../styles/Home.module.css";
 
@@ -13,7 +14,7 @@ const Home: NextPage = () => {
       </Head>
       <main className={styles.main}>
         <h1 className={styles.title}>
-          Welcome to <a href="/">Wikidata Charts</a>
+          Welcome to <Link href="/">Wikidata Charts</Link>
         </h1>
 
         <p className={styles.description}>
@@ -22,25 +23,32 @@ const Home: NextPage = () => {
         </p>
 
         <div className={styles.grid}>
-          <a href="/chart" className={styles.card}>
-            <h2>Charts</h2>
-            <p>Click here to get the charts</p>
-          </a>
+          <Link href="/chart">
+            <a className={styles.card}>
+              <h2>Charts</h2>
+              <p>Click here to get the charts</p>
+            </a>
+          </Link>
 
-          <a href="category/podcast" className={styles.card}>
-            <h2>🎙️ Podcasts &rarr;</h2>
-            <p>Analyze podcast quests and episode frequency</p>
-          </a>
+          <Link href="/category/podcast">
+            <a className={styles.card}>
+              <h2>🎙️ Podcasts &rarr;</h2>
+              <p>Analyze podcast quests and episode frequency</p>
+            </a>
+          </Link>
 
-          <a href="category/country" className={styles.card}>
-            <h2>🌍 Country &rarr;</h2>
-            <p>Analyse country indicators such as life expectancy</p>
-          </a>
-
-          <a href="category/country" className={styles.card}>
-            <h2>🗳️ Election &rarr;</h2>
-            <p>Analyse candidate data.</p>
-          </a>
+          <Link href="/category/country">
+            <a className={styles.card}>
+              <h2>🌍 Country &rarr;</h2>
+              <p>Analyse country indicators such as life expectancy</p>
+            </a>
+          </Link>
+          <Link href="category/country">
+            <a className={styles.card}>
+              <h2>🗳️ Election &rarr;</h2>
+              <p>Analyse candidate data.</p>
+            </a>
+          </Link>
           {/*<a
             href="https://github.com/vercel/next.js/tree/master/examples"
             className={styles.card}
