@@ -78,3 +78,19 @@ export const stackFemaleProportion = function (
   }
   return data;
 };
+
+export const stackTime = function (res: SparqlResult[]) {
+  const data = [];
+  const allTimePoints = res.map((r) => r.time);
+  const uniq = [...new Set(allTimePoints)];
+  for (let i = 0; i < uniq.length; i++) {
+    let values = {};
+    let find = res
+      .filter((r) => r.time === uniq[i])
+      .forEach((r) => {
+        values[r.search.value] = r.value;
+      });
+    data.push({ year: Date.parse(uniq[i]) / 1000, ...values });
+  }
+  return data.sort((n1, n2) => n1.year - n2.year);
+};

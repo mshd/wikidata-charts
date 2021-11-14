@@ -13,26 +13,35 @@ const Home: NextPage = () => {
       </Head>
       <main className={styles.main}>
         <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
+          Welcome to <a href="/">Wikidata Charts</a>
         </h1>
 
         <p className={styles.description}>
-          Get started by editing{" "}
-          <code className={styles.code}>pages/index.tsx</code>
+          Get started by visualizing data{" "}
+          <code className={styles.code}>using charts</code>
         </p>
 
         <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
+          <a href="/chart" className={styles.card}>
+            <h2>Charts</h2>
+            <p>Click here to get the charts</p>
           </a>
 
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
+          <a href="category/podcast" className={styles.card}>
+            <h2>🎙️ Podcasts &rarr;</h2>
+            <p>Analyze podcast quests and episode frequency</p>
           </a>
 
-          <a
+          <a href="category/country" className={styles.card}>
+            <h2>🌍 Country &rarr;</h2>
+            <p>Analyse country indicators such as life expectancy</p>
+          </a>
+
+          <a href="category/country" className={styles.card}>
+            <h2>🗳️ Election &rarr;</h2>
+            <p>Analyse candidate data.</p>
+          </a>
+          {/*<a
             href="https://github.com/vercel/next.js/tree/master/examples"
             className={styles.card}
           >
@@ -48,20 +57,17 @@ const Home: NextPage = () => {
             <p>
               Instantly deploy your Next.js site to a public URL with Vercel.
             </p>
-          </a>
+          </a> */}
         </div>
       </main>
 
       <footer className={styles.footer}>
         <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
+          href="https://twitter.com/EntitreeApp"
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by{" "}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
+          Powered by <span className={styles.logo}>CodeLedge</span>
         </a>
       </footer>
     </div>

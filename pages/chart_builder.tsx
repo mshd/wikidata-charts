@@ -19,6 +19,7 @@ import {
   stackAge,
   stackFemaleProportion,
   stackMonth,
+  stackTime,
   stackYear,
 } from "../src/sparql/stack";
 
@@ -27,6 +28,7 @@ import AsyncSelect from "react-select/async";
 // import { Store } from "./SqliteHttpvfsDemo";
 // import VisibilitySensor from "react-visibility-sensor";
 import debounce from "debounce-promise";
+import moment from "moment";
 
 export async function indicatorSearch(
   searchTerm: string
@@ -144,6 +146,8 @@ export const MainChart: React.FC = () => {
       data = stackAge(res);
     } else if (indicator.time == "female") {
       data = stackFemaleProportion(requestedIds, res);
+    } else if (indicator.time == "time") {
+      data = stackTime(res);
     }
     console.log(data);
     setData({
@@ -198,8 +202,14 @@ export const MainChart: React.FC = () => {
           initialHeight={300}
         >
           <LineChart data={data.data}>
-            <XAxis dataKey="year" />
-            <YAxis />
+            <XAxis
+              // type="number"
+              dataKey="year"
+              // scale="time"
+              // domain={["dataMin", "auto"]}
+              // tickFormatter={(d) => `${moment.unix(d).format("YYYY-MM")}`}
+            />
+            <YAxis domain={["dataMin", "auto"]} />
             <Tooltip />
             <Legend />
             {data.series.map((s, i) => (

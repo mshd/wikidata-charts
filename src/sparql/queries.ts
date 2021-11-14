@@ -38,6 +38,15 @@ const PART_OF_SERIES = "P179";
 const superQueries = {
   // OPTIONAL { ?search wdt:P585 ?electionDate. }
   // OPTIONAL { ?search wdt:P361 ?parentElection. ?parentElection wdt:P585 ?electionDate. }
+  valueByItem: `SELECT ?search ?searchLabel ?value ?time
+WHERE 
+{
+  VALUES ?search {wd:$1}.
+  ?search p:$p ?statement.
+  ?statement ps:$p ?value;
+             pq:$d ?time.
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
+}`,
   ageByEvent: `SELECT ?search ?searchLabel ?age (COUNT(?item) as ?value)
 WHERE
 {
@@ -116,6 +125,26 @@ ORDER BY ?year`,
 };
 export const queries: IndicatorInfo[] = [
   {
+    code: "EMPLOYEE",
+    name: "employees over time",
+    props: {
+      d: POINT_IN_TIME,
+      p: "P1128",
+    },
+    time: "time",
+    query: superQueries.valueByItem,
+  },
+  {
+    code: "LIFE_EXPECTANCY",
+    name: "life expectancy over time",
+    props: {
+      d: POINT_IN_TIME,
+      p: "P2250",
+    },
+    time: "time",
+    query: superQueries.valueByItem,
+  },
+  {
     code: "AGE_BY_ELECTION",
     name: "Candidate Age by election",
     props: {
@@ -125,12 +154,12 @@ export const queries: IndicatorInfo[] = [
     query: superQueries.ageByEvent,
   },
   {
-    code: "PODCAST_YEARLY",
+    code: "TV_EPISODES_YEARLY",
     name: "TV episodes published by year",
     props: {
       s: PART_OF_SERIES,
       d: PUBLISHED_DATE,
-      i: "Q21191270", //TV episode
+      i: "Q2431196", //TV episode Q21191270
     },
     time: "year",
     query: superQueries.byYear,
