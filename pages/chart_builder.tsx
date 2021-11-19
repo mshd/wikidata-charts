@@ -53,10 +53,13 @@ const COLORS = [
 
 export const MainChart: React.FC = () => {
   const router = useRouter();
-  let presetIndicator = getIndicatorByKey(router.query.indicator as string);
+  let presetIndicator =
+    getIndicatorByKey(router.query.indicator as string) ?? null;
   console.log(router.query.indicator, presetIndicator);
   const [items, setItems] = useState<WikidataSearchResult[]>([]);
-  const [indicator, setIndicator] = useState(presetIndicator);
+  const [indicator, setIndicator] = useState<IndicatorInfo | null>(
+    presetIndicator
+  );
   console.log("sdf,", indicator);
   // useEffect(() => {
   //   setIndicator(presetIndicator);
