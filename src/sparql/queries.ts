@@ -13,9 +13,10 @@ type PROP_TYPE = {
 // };
 export const INDICATOR_GROUPS = [
   "politics",
-  "podcast",
   "media",
+  "science",
   "television",
+  "podcast",
   "economy",
   "statistics",
 ];
@@ -214,6 +215,18 @@ let queries: IndicatorInfo[] = [
     query: superQueries.byYear,
   },
   {
+    code: "FLOODS_YEARLY",
+    name: "floods by country",
+    props: {
+      s: "P17", //country
+      i: "Q8068", //flood
+      d: POINT_IN_TIME,
+    },
+    time: "year",
+    group: "science",
+    query: superQueries.byYear,
+  },
+  {
     code: "MOVIES_YEARLY_COUNTRY",
     name: "movies published by origin country",
     props: {
@@ -235,7 +248,7 @@ let queries: IndicatorInfo[] = [
     },
     time: "month",
     query: superQueries.byMonth,
-    group: "media",
+    group: "podcast",
   },
 ];
 
