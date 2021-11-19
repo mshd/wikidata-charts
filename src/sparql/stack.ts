@@ -36,7 +36,7 @@ export const stackMonth = function (res, start = 2010, end = 2022) {
   return data;
 };
 
-export const stackAge = function (res, start = 18, end = 90) {
+export const stackAge = function (res, start = 17, end = 90) {
   const data = [];
   for (let i = start; i < end; i++) {
     let values = {};

@@ -15,18 +15,21 @@ export const INDICATOR_GROUPS = [
   "politics",
   "podcast",
   "media",
+  "television",
   "economy",
   "statistics",
 ];
 export type IndicatorInfo = {
   group: string;
-  code?: string;
+  code: string;
   name: string;
   query: string;
   props: PROP_TYPE;
   time?: string;
   description?: string;
   fullQuery?: string;
+  error?: string; //for debugging
+
   // indicator_name: string;
   // short_definition: string | null;
   // long_definition: string;
@@ -44,34 +47,46 @@ export type SparqlResult = {
   [key: string]: any;
 };
 const PUBLISHED_DATE = "P577";
+const TALK_SHOW_GUEST = "P5030";
+const PODCAST_EPISODE = "Q61855877";
 const POINT_IN_TIME = "P585";
+const START_TIME = "P580";
+
 const PART_OF_SERIES = "P179";
+const CAST_MEMBER = "P161";
+let newIdea = [
+  {
+    name: "podcast",
+    item: "Q61855877",
+    analysis: [
+      {
+        name: "episode",
+        props: [PUBLISHED_DATE, TALK_SHOW_GUEST],
+      },
+    ],
+  },
+];
 let queries: IndicatorInfo[] = [
-  // {
-  //   code: "EMPLOYEE",
-  //   name: "employees over time",
-  //   props: {
-  //     d: POINT_IN_TIME,
-  //     p: "P1128",
-  //   },
-  //   time: "time",
-  //   query: superQueries.valueByItem,
-  // },
-  // {
-  //   code: "LIFE_EXPECTANCY",
-  //   name: "life expectancy over time",
-  //   props: {
-  //     d: POINT_IN_TIME,
-  //     p: "P2250",
-  //   },
-  //   time: "time",
-  //   query: superQueries.valueByItem,
-  // },
+  {
+    code: "AGE_BY_PARLIAMENT",
+    name: "Parliament age distribution by term",
+    props: {
+      query:
+        "?item p:P39 ?position. ?position pq:P2937 ?search. #parliamentiary term",
+      s: "P3602",
+      eventDate: START_TIME,
+    },
+    time: "age",
+    query: superQueries.ageByEvent,
+    group: "politics",
+  },
   {
     code: "AGE_BY_ELECTION",
     name: "Candidate Age by election",
     props: {
+      query: "?item wdt:$s ?search.",
       s: "P3602",
+      eventDate: POINT_IN_TIME,
     },
     time: "age",
     query: superQueries.ageByEvent,
@@ -106,12 +121,50 @@ let queries: IndicatorInfo[] = [
     name: "podcast episodes female guest proportion",
     props: {
       s: PART_OF_SERIES,
-      i: "Q61855877", //podcast episode
+      i: PODCAST_EPISODE,
       d: PUBLISHED_DATE,
     },
     time: "female",
     query: superQueries.byGender,
     group: "podcast",
+  },
+  {
+    code: "PODCAST_EPISODES_AVERAGE_AGE",
+    name: "podcast episodes guests average age",
+    props: {
+      s: PART_OF_SERIES,
+      i: PODCAST_EPISODE,
+      d: PUBLISHED_DATE,
+      p: TALK_SHOW_GUEST,
+    },
+    time: "year",
+    query: superQueries.avgAge,
+    group: "podcast",
+  },
+  {
+    code: "podcast episodes average duration",
+    name: "podcast episodes average duration",
+    props: {
+      s: PART_OF_SERIES,
+      i: PODCAST_EPISODE,
+      d: PUBLISHED_DATE,
+    },
+    time: "year",
+    query: superQueries.avgDuration,
+    group: "podcast",
+  },
+  {
+    code: "TV_EPISODES_AVERAGE_AGE",
+    name: "TV episodes guests average age",
+    props: {
+      s: PART_OF_SERIES,
+      i: "Q2431196", //audiovisual work
+      d: PUBLISHED_DATE,
+      p: CAST_MEMBER,
+    },
+    time: "year",
+    query: superQueries.avgAge,
+    group: "television",
   },
   {
     code: "BOOKS_YEARLY",
@@ -120,6 +173,18 @@ let queries: IndicatorInfo[] = [
       s: "P50",
       d: PUBLISHED_DATE,
       i: "Q7725634", //literary work
+    },
+    time: "year",
+    query: superQueries.byYear,
+    group: "media",
+  },
+  {
+    code: "scholarly article",
+    name: "scholarly article by year by author",
+    props: {
+      s: "P50",
+      d: PUBLISHED_DATE,
+      i: "Q13442814", //scholarly article
     },
     time: "year",
     query: superQueries.byYear,
@@ -161,11 +226,12 @@ let queries: IndicatorInfo[] = [
     group: "media",
   },
   {
+    code: "PODCAST_MONTH",
     name: "podcasts episodes published by month",
     props: {
       s: PART_OF_SERIES,
       d: PUBLISHED_DATE,
-      i: "Q61855877", //podcast episode
+      i: PODCAST_EPISODE,
     },
     time: "month",
     query: superQueries.byMonth,
@@ -178,7 +244,7 @@ for (let i = 0; i < QUANTITY_PROPS.length; i++) {
   const prop = QUANTITY_PROPS[i];
   const propId = prop.item.split("entity/")[1];
   queries.push({
-    code: prop.itemLabel,
+    code: propId,
     name: prop.itemLabel,
     description: prop.itemDescription,
     props: {

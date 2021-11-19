@@ -9,7 +9,7 @@ export async function itemSearch(
   indicator: IndicatorInfo | null
 ): Promise<WikidataSearchResult[]> {
   // try {
-  if (indicator && indicator.time == "time") {
+  if (false && indicator && indicator.time == "time") {
     console.log(indicator);
     const widget = await import(
       "../sparql/properties/res/" + indicator.props.p + ".json"

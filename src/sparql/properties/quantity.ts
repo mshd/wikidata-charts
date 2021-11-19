@@ -499,6 +499,14 @@ export const quantityProps = [
       "http://www.wikidata.org/entity/statement/P8328-5b546bf7-45fe-3cf1-80aa-ff968bb01569",
   },
   {
+    item: "http://www.wikidata.org/entity/P8476",
+    itemLabel: "BTI Governance Index",
+    itemDescription:
+      "measures change of countries towards democracy and market economy",
+    propContraint:
+      "http://www.wikidata.org/entity/statement/P8476-0994200e-430f-14b6-cd90-40c1a354bfc2",
+  },
+  {
     item: "http://www.wikidata.org/entity/P8340",
     itemLabel: "estimated value",
     itemDescription: "estimated value of a house, company, patent, etc",

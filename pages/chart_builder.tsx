@@ -1,4 +1,3 @@
-//@ts-nocheck
 import { IndicatorInfo, SparqlResult, queries } from "../src/sparql/queries";
 import {
   Label,
@@ -10,7 +9,11 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
+import {
+  getIndicatorByKey,
+  indicatorSearch,
+} from "../src/service/propertySearch";
 import runSparql, {
   WikidataSearchResult,
   searchTerm,
@@ -29,9 +32,9 @@ import { abbreviateNumber } from "../src/helper/number";
 // import { Store } from "./SqliteHttpvfsDemo";
 // import VisibilitySensor from "react-visibility-sensor";
 import debounce from "debounce-promise";
-import { indicatorSearch } from "../src/service/propertySearch";
 import { itemSearch } from "../src/service/itemSearch";
 import moment from "moment";
+import { useRouter } from "next/router";
 
 const indicatorSearchDebounce = debounce(indicatorSearch, 0);
 
@@ -49,8 +52,15 @@ const COLORS = [
 ];
 
 export const MainChart: React.FC = () => {
+  const router = useRouter();
+  let presetIndicator = getIndicatorByKey(router.query.indicator as string);
+  console.log(router.query.indicator, presetIndicator);
   const [items, setItems] = useState<WikidataSearchResult[]>([]);
-  const [indicator, setIndicator] = useState<IndicatorInfo>();
+  const [indicator, setIndicator] = useState(presetIndicator);
+  console.log("sdf,", indicator);
+  // useEffect(() => {
+  //   setIndicator(presetIndicator);
+  // }, [presetIndicator]);
   const [querySource, setQuerySource] = useState("");
 
   const [data, setData] = useState(
@@ -65,18 +75,28 @@ export const MainChart: React.FC = () => {
     }
     console.log("plot", items, indicator);
     const requestedIds = items.map((c) => c.id);
-    let query = indicator.query.replace("$1", requestedIds.join(" wd:"));
+    let query = indicator.query;
     for (let prop_id in indicator.props) {
       console.log("prop_id", prop_id);
       query = query.replaceAll("$" + prop_id, indicator.props?.[prop_id]);
     }
-    setQuerySource("https://query.wikidata.org/#" + encodeURI(query));
+    setQuerySource(
+      "https://query.wikidata.org/#" +
+        encodeURI(query.replace("$1", requestedIds.join(" wd:")))
+    );
     console.log("query", query);
-    //  queries
-    //   .find((ind) => ind.code === indicator.)
-    //   ?.query.replace("$1", requestedId);
-    const res: SparqlResult[] = await runSparql(query);
+    let res: SparqlResult[] = [];
+    for (let i = 0; i < requestedIds.length; i++) {
+      let id = requestedIds[i];
+      let individualRequest = await runSparql(query.replace("$1", id));
+      console.log(individualRequest);
+      res = res.concat(individualRequest);
+    }
     console.log("res", res);
+    if (res.length === 0) {
+      setData(null);
+      return;
+    }
     let data: any[] = [];
     if (indicator.time == "year") {
       data = stackYear(res);
@@ -107,10 +127,11 @@ export const MainChart: React.FC = () => {
     >
       Indicator:{" "}
       <AsyncSelect<IndicatorInfo>
+        instanceId="indicator"
         value={indicator}
         cacheOptions
         defaultOptions
-        loadOptions={(e) => {
+        loadOptions={(e: string) => {
           return indicatorSearchDebounce(e);
         }}
         getOptionLabel={(e) => e.name}
@@ -121,29 +142,30 @@ export const MainChart: React.FC = () => {
       />
       Search:{" "}
       <AsyncSelect<WikidataSearchResult, true>
+        key={indicator?.code}
+        instanceId="searchItem"
         value={items}
         // cacheOptions
         defaultOptions
         isMulti
-        loadOptions={(e) => {
-          console.log("lioad");
+        loadOptions={(e: any) => {
           return itemSearchDebounce(e, indicator);
         }}
         getOptionLabel={(e) => e.label + " (" + e.description + ")"}
         // formatOptionLabel={IndicatorOption}
         getOptionValue={(e) => e.id}
-        onChange={(e) => setItems(e)}
+        onChange={(e: any) => setItems(e)}
         // isOptionDisabled={(e) => !!e.error}
       />
       {data && (
         <ResponsiveContainer
           width="100%"
-          height={300}
-          initialWidth={600}
-          initialHeight={300}
+          height={350}
+          // initialWidth={600}
+          // initialHeight={300}
         >
           <LineChart data={data.data}>
-            {indicator.time == "time" ? (
+            {indicator?.time == "time" ? (
               <>
                 <XAxis
                   type="number"
@@ -153,8 +175,8 @@ export const MainChart: React.FC = () => {
                   tickFormatter={(d) => `${moment.unix(d).format("YYYY")}`}
                 />
                 <Tooltip
-                  tickFormatter={(d) =>
-                    `${moment.unix(d).format("YYYY-MM-DD")}`
+                  labelFormatter={(t) =>
+                    `${moment.unix(t).format("YYYY-MM-DD")}`
                   }
                 />
               </>

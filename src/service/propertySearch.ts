@@ -17,6 +17,9 @@ export async function indicatorSearch(
     throw e;
   }
 }
+export function getIndicatorByKey(indicator: string) {
+  return queries.find((element) => element.code == indicator);
+}
 type GROUP_OPTIONS = {
   label: string;
   options: IndicatorInfo[];
