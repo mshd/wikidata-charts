@@ -175,7 +175,7 @@ export const MainChart: React.FC = () => {
                   dataKey="year"
                   scale="time"
                   domain={["dataMin", "auto"]}
-                  tickFormatter={(d) => `${moment.unix(d).format("YYYY")}`}
+                  tickFormatter={(d) => `${moment.unix(d).format("YYYY-MM")}`}
                 />
                 <Tooltip
                   labelFormatter={(t) =>
