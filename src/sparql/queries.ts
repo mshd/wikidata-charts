@@ -1,3 +1,6 @@
+import { quantityProps } from "./properties/quantity";
+import { superQueries } from "./superQueries";
+
 type PROP_TYPE = {
   [key: string]: string;
 };
@@ -8,12 +11,21 @@ type PROP_TYPE = {
 //   i?: string;
 //   d?: string;
 // };
+export const INDICATOR_GROUPS = [
+  "politics",
+  "podcast",
+  "media",
+  "economy",
+  "statistics",
+];
 export type IndicatorInfo = {
+  group: string;
   code?: string;
   name: string;
   query: string;
   props: PROP_TYPE;
   time?: string;
+  description?: string;
   fullQuery?: string;
   // indicator_name: string;
   // short_definition: string | null;
@@ -34,116 +46,27 @@ export type SparqlResult = {
 const PUBLISHED_DATE = "P577";
 const POINT_IN_TIME = "P585";
 const PART_OF_SERIES = "P179";
-
-const superQueries = {
-  // OPTIONAL { ?search wdt:P585 ?electionDate. }
-  // OPTIONAL { ?search wdt:P361 ?parentElection. ?parentElection wdt:P585 ?electionDate. }
-  valueByItem: `SELECT ?search ?searchLabel ?value ?time
-WHERE 
-{
-  VALUES ?search {wd:$1}.
-  ?search p:$p ?statement.
-  ?statement ps:$p ?value;
-             pq:$d ?time.
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
-}`,
-  ageByEvent: `SELECT ?search ?searchLabel ?age (COUNT(?item) as ?value)
-WHERE
-{
-  VALUES ?search {wd:$1}
-  ?item wdt:$s ?search;
-          p:P569/psv:P569 ?birth_date_node .
-  ?birth_date_node wikibase:timeValue ?birth_date .
-  ?search wdt:P585 ?electionDate.
-
-  BIND( year(?electionDate) - year(?birth_date) - if(month(?electionDate)<month(?birth_date) || (month(?electionDate)=month(?birth_date) && day(?electionDate) < day(?birth_date)),1,0) as ?age )
-
-  SERVICE wikibase:label {
-    bd:serviceParam wikibase:language "en"
-  }
-}
-GROUP BY ?age ?search ?searchLabel
-ORDER BY ?age`,
-  byYear: `SELECT ?search ?searchLabel ?year (COUNT(?item) as ?value)
-WHERE
-{
-  VALUES ?search {wd:$1}
-  ?item wdt:P31/wdt:P279* wd:$i.
-  ?item wdt:$s ?search;
-          p:$d/psv:$d [
-                wikibase:timePrecision ?precision ;
-                wikibase:timeValue ?date ;
-              ] .
-  BIND(YEAR(?date) as ?year).
-  FILTER( ?date >= "2000-01-01T00:00:00"^^xsd:dateTime )
-  FILTER( ?precision >= "9"^^xsd:integer ) # precision of at least year
-  SERVICE wikibase:label {
-    bd:serviceParam wikibase:language "en"
-  }
-}
-GROUP BY ?year ?search ?searchLabel
-ORDER BY ?year`,
-  byMonth: `SELECT ?search ?searchLabel ?yearmonth (COUNT(?item) as ?value)
-WHERE
-{
-  VALUES ?search {wd:$1}
-  ?item wdt:$s ?search;
-          p:$d/psv:$d [
-                wikibase:timePrecision ?precision ;
-                wikibase:timeValue ?date ;
-              ] .
-  BIND(CONCAT(STR(YEAR(?date)),"-",STR(MONTH(?date))) as ?yearmonth).
-  FILTER( ?date >= "2000-01-01T00:00:00"^^xsd:dateTime )
-  FILTER( ?precision >= "10"^^xsd:integer ) # precision of at least month
-  SERVICE wikibase:label {
-    bd:serviceParam wikibase:language "en"
-  }
-}
-GROUP BY ?yearmonth ?search ?searchLabel
-ORDER BY ?yearmonth`,
-  byGender: `SELECT ?search ?searchLabel ?year (COUNT(?item) as ?value) ?genderLabel
-WHERE
-{
-  VALUES ?search {wd:$1}
-  ?podcast wdt:P5030 ?item.
-  ?item wdt:P21 ?gender.
-  ?podcast wdt:P31/wdt:P279* wd:Q61855877.
-  ?podcast wdt:P179 ?search;
-          p:P577/psv:P577 [
-                wikibase:timePrecision ?precision ;
-                wikibase:timeValue ?date ;
-              ] .
-  BIND(YEAR(?date) as ?year).
-  FILTER( ?date >= "2000-01-01T00:00:00"^^xsd:dateTime )
-  FILTER( ?precision >= "9"^^xsd:integer ) # precision of at least year
-  SERVICE wikibase:label {
-    bd:serviceParam wikibase:language "en"
-  }
-}
-GROUP BY ?year ?search ?searchLabel ?genderLabel
-ORDER BY ?year`,
-};
-export const queries: IndicatorInfo[] = [
-  {
-    code: "EMPLOYEE",
-    name: "employees over time",
-    props: {
-      d: POINT_IN_TIME,
-      p: "P1128",
-    },
-    time: "time",
-    query: superQueries.valueByItem,
-  },
-  {
-    code: "LIFE_EXPECTANCY",
-    name: "life expectancy over time",
-    props: {
-      d: POINT_IN_TIME,
-      p: "P2250",
-    },
-    time: "time",
-    query: superQueries.valueByItem,
-  },
+let queries: IndicatorInfo[] = [
+  // {
+  //   code: "EMPLOYEE",
+  //   name: "employees over time",
+  //   props: {
+  //     d: POINT_IN_TIME,
+  //     p: "P1128",
+  //   },
+  //   time: "time",
+  //   query: superQueries.valueByItem,
+  // },
+  // {
+  //   code: "LIFE_EXPECTANCY",
+  //   name: "life expectancy over time",
+  //   props: {
+  //     d: POINT_IN_TIME,
+  //     p: "P2250",
+  //   },
+  //   time: "time",
+  //   query: superQueries.valueByItem,
+  // },
   {
     code: "AGE_BY_ELECTION",
     name: "Candidate Age by election",
@@ -152,6 +75,7 @@ export const queries: IndicatorInfo[] = [
     },
     time: "age",
     query: superQueries.ageByEvent,
+    group: "politics",
   },
   {
     code: "TV_EPISODES_YEARLY",
@@ -163,6 +87,7 @@ export const queries: IndicatorInfo[] = [
     },
     time: "year",
     query: superQueries.byYear,
+    group: "media",
   },
   {
     code: "PODCAST_YEARLY",
@@ -174,6 +99,7 @@ export const queries: IndicatorInfo[] = [
     },
     time: "year",
     query: superQueries.byYear,
+    group: "podcast",
   },
   {
     code: "EPISODES_FEMALE_GUEST_PROP",
@@ -185,6 +111,7 @@ export const queries: IndicatorInfo[] = [
     },
     time: "female",
     query: superQueries.byGender,
+    group: "podcast",
   },
   {
     code: "BOOKS_YEARLY",
@@ -196,6 +123,7 @@ export const queries: IndicatorInfo[] = [
     },
     time: "year",
     query: superQueries.byYear,
+    group: "media",
   },
   {
     code: "MOVIES_YEARLY",
@@ -206,6 +134,7 @@ export const queries: IndicatorInfo[] = [
       i: "Q11424", //film/movie
     },
     query: superQueries.byYear,
+    group: "media",
   },
   {
     code: "EARTHQUAKE_YEARLY",
@@ -216,7 +145,7 @@ export const queries: IndicatorInfo[] = [
       d: POINT_IN_TIME,
     },
     time: "year",
-
+    group: "science",
     query: superQueries.byYear,
   },
   {
@@ -229,6 +158,7 @@ export const queries: IndicatorInfo[] = [
     },
     time: "year",
     query: superQueries.byYear,
+    group: "media",
   },
   {
     name: "podcasts episodes published by month",
@@ -239,5 +169,26 @@ export const queries: IndicatorInfo[] = [
     },
     time: "month",
     query: superQueries.byMonth,
+    group: "media",
   },
 ];
+
+const QUANTITY_PROPS = quantityProps;
+for (let i = 0; i < QUANTITY_PROPS.length; i++) {
+  const prop = QUANTITY_PROPS[i];
+  const propId = prop.item.split("entity/")[1];
+  queries.push({
+    code: prop.itemLabel,
+    name: prop.itemLabel,
+    description: prop.itemDescription,
+    props: {
+      d: POINT_IN_TIME,
+      p: propId,
+    },
+    time: "time",
+    group: "statistics",
+    query: superQueries.valueByItem,
+  });
+}
+
+export { queries };
