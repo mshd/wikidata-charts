@@ -69,12 +69,12 @@ WHERE
 }
 GROUP BY ?yearmonth ?search ?searchLabel
 ORDER BY ?yearmonth`,
-  byGender: `SELECT ?search ?searchLabel ?year (COUNT(?item) as ?value) ?genderLabel
+  byCharacteristic: `SELECT ?search ?searchLabel ?year (COUNT(?item) as ?value) ?cLabel
 WHERE
 {
   VALUES ?search {wd:$1}
   ?podcast wdt:P5030 ?item.
-  ?item wdt:P21 ?gender.
+  ?item wdt:$p ?c.
   ?podcast wdt:P31/wdt:P279* wd:Q61855877.
   ?podcast wdt:P179 ?search;
           p:P577/psv:P577 [
@@ -88,7 +88,7 @@ WHERE
     bd:serviceParam wikibase:language "en"
   }
 }
-GROUP BY ?year ?search ?searchLabel ?genderLabel
+GROUP BY ?year ?search ?searchLabel ?cLabel
 ORDER BY ?year`,
   avgAge: `SELECT ?search ?searchLabel ?year (COUNT(?item) as ?amount) (avg(?year - ?birthYear) as ?value) 
 WHERE

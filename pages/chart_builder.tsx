@@ -1,5 +1,6 @@
-import { IndicatorInfo, SparqlResult, queries } from "../src/sparql/queries";
 import {
+  Bar,
+  BarChart,
   Label,
   Legend,
   Line,
@@ -9,7 +10,17 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { IndicatorInfo, SparqlResult, queries } from "../src/sparql/queries";
 import React, { memo, useEffect, useState } from "react";
+import {
+  getAllC,
+  stackAge,
+  stackBarProportion,
+  stackFemaleProportion,
+  stackMonth,
+  stackTime,
+  stackYear,
+} from "../src/sparql/stack";
 import {
   getIndicatorByKey,
   indicatorSearch,
@@ -18,13 +29,6 @@ import runSparql, {
   WikidataSearchResult,
   searchTerm,
 } from "../src/service/wikidataSearch";
-import {
-  stackAge,
-  stackFemaleProportion,
-  stackMonth,
-  stackTime,
-  stackYear,
-} from "../src/sparql/stack";
 
 import AsyncSelect from "react-select/async";
 import { abbreviateNumber } from "../src/helper/number";
@@ -67,7 +71,7 @@ export const MainChart: React.FC = () => {
   const [querySource, setQuerySource] = useState("");
 
   const [data, setData] = useState(
-    null as null | { series: any[]; data: any[] }
+    null as null | { series: any[]; data: any[]; props: any[] }
   );
   const itemSearchDebounce = debounce(itemSearch, 250);
 
@@ -101,6 +105,7 @@ export const MainChart: React.FC = () => {
       return;
     }
     let data: any[] = [];
+    let props = [];
     if (indicator.time == "year") {
       data = stackYear(res);
     } else if (indicator.time == "month") {
@@ -111,11 +116,16 @@ export const MainChart: React.FC = () => {
       data = stackFemaleProportion(requestedIds, res);
     } else if (indicator.time == "time") {
       data = stackTime(res);
+    } else if (indicator.time == "bar") {
+      data = stackBarProportion(res);
+      props = getAllC(res);
     }
+
     console.log(data);
     setData({
       series: items,
       data: data,
+      props: props,
     });
   }
   useEffect(() => {
@@ -167,49 +177,69 @@ export const MainChart: React.FC = () => {
           // initialWidth={600}
           // initialHeight={300}
         >
-          <LineChart data={data.data}>
-            {indicator?.time == "time" ? (
-              <>
-                <XAxis
-                  type="number"
-                  dataKey="year"
-                  scale="time"
-                  domain={["dataMin", "auto"]}
-                  tickFormatter={(d) => `${moment.unix(d).format("YYYY-MM")}`}
+          {indicator && indicator.time == "bar" ? (
+            <BarChart data={data.data}>
+              <XAxis dataKey="year" />
+              <Tooltip />
+              <YAxis
+                tickFormatter={(d) => `${abbreviateNumber(d)}`}
+                domain={["dataMin", "auto"]}
+              />
+              {data.props.map((c, i) => (
+                <Bar
+                  key={i}
+                  dataKey={c}
+                  stackId="a"
+                  fill={COLORS[i % COLORS.length]}
                 />
-                <Tooltip
-                  labelFormatter={(t) =>
-                    `${moment.unix(t).format("YYYY-MM-DD")}`
-                  }
-                />
-              </>
-            ) : (
-              <>
-                <XAxis dataKey="year" />
-                <Tooltip />
-              </>
-            )}
-            <YAxis
-              tickFormatter={(d) => `${abbreviateNumber(d)}`}
-              domain={["dataMin", "auto"]}
-            />
+              ))}
+              <Legend />
+            </BarChart>
+          ) : (
+            <LineChart data={data.data}>
+              {indicator?.time == "time" ? (
+                <>
+                  <XAxis
+                    type="number"
+                    dataKey="year"
+                    scale="time"
+                    domain={["dataMin", "auto"]}
+                    tickFormatter={(d) => `${moment.unix(d).format("YYYY-MM")}`}
+                  />
+                  <Tooltip
+                    labelFormatter={(t) =>
+                      `${moment.unix(t).format("YYYY-MM-DD")}`
+                    }
+                  />
+                </>
+              ) : (
+                <>
+                  <XAxis dataKey="year" />
+                  <Tooltip />
+                </>
+              )}
+              <YAxis
+                tickFormatter={(d) => `${abbreviateNumber(d)}`}
+                domain={["dataMin", "auto"]}
+              />
 
-            <Legend />
-            {data.series.map((s, i) => (
-              <Line
-                key={s.id}
-                type="monotone"
-                dataKey={s.id}
-                name={s.label}
-                // fill={COLORS[i % COLORS.length]}
-                stroke={COLORS[i % COLORS.length]}
-                connectNulls
-                strokeWidth={3}
-              >
-                <Label>Test</Label>
-              </Line>
-            ))}
-          </LineChart>
+              <Legend />
+              {data.series.map((s, i) => (
+                <Line
+                  key={s.id}
+                  type="monotone"
+                  dataKey={s.id}
+                  name={s.label}
+                  // fill={COLORS[i % COLORS.length]}
+                  stroke={COLORS[i % COLORS.length]}
+                  connectNulls
+                  strokeWidth={3}
+                >
+                  <Label>Test</Label>
+                </Line>
+              ))}
+            </LineChart>
+          )}
         </ResponsiveContainer>
       )}
       <details>

@@ -94,3 +94,38 @@ export const stackTime = function (res: SparqlResult[]) {
   }
   return data.sort((n1, n2) => n1.year - n2.year);
 };
+
+export const stackBarProportion = function (
+  // ids,
+  res,
+  start = 2010,
+  end = 2022
+) {
+  const data = [];
+  console.log(res[0]);
+  for (let i = start; i < end; i++) {
+    let values = {};
+    let findYear = res.filter((r) => r.year === i);
+    if (findYear.length) {
+      var total = findYear.reduce((acc, curr) => {
+        return (acc = acc + curr.value);
+      }, 0);
+      values.other = 0;
+      findYear.forEach((r) => {
+        let proportion = r.value / total;
+        if (proportion < 0.02) {
+          values.other += proportion;
+        } else {
+          values[r.cLabel] = proportion;
+        }
+      });
+      data.push({ year: i, ...values });
+    }
+  }
+  return data;
+};
+
+export const getAllC = function (res) {
+  const data = res.map((r) => r.cLabel);
+  return ["other", ...new Set(data)];
+};
