@@ -55,10 +55,21 @@ const START_TIME = "P580";
 
 const PART_OF_SERIES = "P179";
 const CAST_MEMBER = "P161";
+
+export const COLOR_QUERY = `SELECT ?item ?itemLabel ?color ?hex WHERE {
+  VALUES ?item {wd:$1}
+    { ?item wdt:P465 ?hex. } 
+  UNION {
+    ?item wdt:P163 ?flag.
+    ?flag p:P462 ?color.
+    ?color pq:P465 ?hex.
+    }
+}`;
+
 let newIdea = [
   {
-    name: "podcast",
-    item: "Q61855877",
+    name: "podcast episodes",
+    item: PODCAST_EPISODE,
     analysis: [
       {
         name: "episode",
@@ -107,14 +118,26 @@ let queries: IndicatorInfo[] = [
   },
   {
     code: "PODCAST_YEARLY",
-    name: "podcasts episodes published by year",
+    name: "podcast episodes published by year",
     props: {
       s: PART_OF_SERIES,
       d: PUBLISHED_DATE,
-      i: "Q61855877", //podcast episode
+      i: PODCAST_EPISODE,
     },
     time: "year",
     query: superQueries.byYear,
+    group: "podcast",
+  },
+  {
+    code: "PODCAST_MONTH",
+    name: "podcast episodes published by month",
+    props: {
+      s: PART_OF_SERIES,
+      d: PUBLISHED_DATE,
+      i: PODCAST_EPISODE,
+    },
+    time: "month",
+    query: superQueries.byMonth,
     group: "podcast",
   },
   {
@@ -290,18 +313,6 @@ let queries: IndicatorInfo[] = [
     time: "year",
     query: superQueries.byYear,
     group: "media",
-  },
-  {
-    code: "PODCAST_MONTH",
-    name: "podcasts episodes published by month",
-    props: {
-      s: PART_OF_SERIES,
-      d: PUBLISHED_DATE,
-      i: PODCAST_EPISODE,
-    },
-    time: "month",
-    query: superQueries.byMonth,
-    group: "podcast",
   },
 ];
 

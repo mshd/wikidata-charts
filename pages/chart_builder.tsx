@@ -10,7 +10,12 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { IndicatorInfo, SparqlResult, queries } from "../src/sparql/queries";
+import {
+  COLOR_QUERY,
+  IndicatorInfo,
+  SparqlResult,
+  queries,
+} from "../src/sparql/queries";
 import React, { memo, useEffect, useState } from "react";
 import {
   getAllC,
@@ -59,7 +64,6 @@ export const MainChart: React.FC = () => {
   const router = useRouter();
   let presetIndicator =
     getIndicatorByKey(router.query.indicator as string) ?? null;
-  console.log(router.query.indicator, presetIndicator);
   const [items, setItems] = useState<WikidataSearchResult[]>([]);
   const [indicator, setIndicator] = useState<IndicatorInfo | null>(
     presetIndicator
@@ -71,7 +75,12 @@ export const MainChart: React.FC = () => {
   const [querySource, setQuerySource] = useState("");
 
   const [data, setData] = useState(
-    null as null | { series: any[]; data: any[]; props: any[] }
+    null as null | {
+      series: any[];
+      data: any[];
+      props: any[];
+      colors: string[];
+    }
   );
   const itemSearchDebounce = debounce(itemSearch, 250);
 
@@ -93,10 +102,16 @@ export const MainChart: React.FC = () => {
     );
     console.log("query", query);
     let res: SparqlResult[] = [];
+    let color: any = {};
     for (let i = 0; i < requestedIds.length; i++) {
       let id = requestedIds[i];
       let individualRequest = await runSparql(query.replace("$1", id));
-      console.log(individualRequest);
+      let colorRequest = await runSparql(COLOR_QUERY.replace("$1", id));
+      console.log(colorRequest);
+      color[id] = colorRequest?.[0]?.hex
+        ? "#" + colorRequest[0].hex
+        : COLORS[i % COLORS.length];
+      console.log(color, individualRequest);
       res = res.concat(individualRequest);
     }
     console.log("res", res);
@@ -126,6 +141,7 @@ export const MainChart: React.FC = () => {
       series: items,
       data: data,
       props: props,
+      colors: color,
     });
   }
   useEffect(() => {
@@ -231,7 +247,7 @@ export const MainChart: React.FC = () => {
                   dataKey={s.id}
                   name={s.label}
                   // fill={COLORS[i % COLORS.length]}
-                  stroke={COLORS[i % COLORS.length]}
+                  stroke={data.colors[s.id]}
                   connectNulls
                   strokeWidth={3}
                 >
