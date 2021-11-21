@@ -6,7 +6,7 @@ import wbk from "wikidata-sdk";
 
 export async function itemSearch(
   term: string,
-  indicator: IndicatorInfo | null
+  indicator?: IndicatorInfo
 ): Promise<WikidataSearchResult[]> {
   // try {
   if (indicator && indicator.time == "time") {

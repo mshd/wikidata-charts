@@ -17,13 +17,16 @@ export async function indicatorSearch(
     throw e;
   }
 }
-export function getIndicatorByKey(indicator: string) {
-  return queries.find((element) => element.code == indicator);
+
+export function getIndicatorByKey(indicatorCode: string) {
+  return queries.find((element) => element.code == indicatorCode);
 }
+
 type GROUP_OPTIONS = {
   label: string;
   options: IndicatorInfo[];
 };
+
 function groupArray(arr: IndicatorInfo[]) {
   let ret: GROUP_OPTIONS[] = [];
   INDICATOR_GROUPS.forEach((group) => {
