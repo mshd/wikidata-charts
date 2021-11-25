@@ -23,6 +23,7 @@ import {
   stackBarProportion,
   stackFemaleProportion,
   stackMonth,
+  stackPartnerAge,
   stackTime,
   stackYear,
 } from "../src/sparql/stack";
@@ -42,6 +43,8 @@ import { itemSearch } from "../src/service/itemSearch";
 import moment from "moment";
 import useIndicatorBookmark from "../hooks/useIndicatorBookmark";
 import useSearchBookmark from "../hooks/useSearchBookmark";
+
+React.useLayoutEffect = React.useEffect;
 
 const indicatorSearchDebounce = debounce(indicatorSearch, 0);
 
@@ -121,6 +124,13 @@ export const MainChart: React.FC = () => {
     } else if (indicator.time == "bar") {
       data = stackBarProportion(res);
       props = getAllC(res);
+    } else if (indicator.time == "bar") {
+      data = stackBarProportion(res);
+    } else if (indicator.time == "partner_age") {
+      console.log(res);
+      data = stackPartnerAge(res);
+      console.log(data);
+      // return;
     }
 
     console.log(data);

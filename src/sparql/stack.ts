@@ -1,9 +1,10 @@
 //@ts-nocheck
+import { DateTime } from "luxon";
 import { SparqlResult } from "./queries";
 
 export const stackYear = function (
   res: SparqlResult[],
-  start = 2010,
+  start = 2000,
   end = 2022
 ) {
   const data = [];
@@ -19,16 +20,16 @@ export const stackYear = function (
   return data;
 };
 
-export const stackMonth = function (res, start = 2010, end = 2022) {
+export const stackMonth = function (res: any, start = 2010, end = 2022) {
   const data = [];
   for (let year = start; year < end; year++) {
     for (let month = 1; month <= 12; month++) {
       let timePoint = `${year}-${month}`;
       let values = {};
       let find = res
-        .filter((r) => r.yearmonth === timePoint)
-        .forEach((r) => {
-          values[r.search.value] = r.value;
+        .filter((r: any) => r.yearmonth === timePoint)
+        .forEach((r: any) => {
+          values[r.search?.value] = r.value;
         });
       data.push({ year: timePoint, ...values });
     }
@@ -36,7 +37,7 @@ export const stackMonth = function (res, start = 2010, end = 2022) {
   return data;
 };
 
-export const stackAge = function (res, start = 17, end = 90) {
+export const stackAge = function (res: any, start = 17, end = 90) {
   const data = [];
   for (let i = start; i < end; i++) {
     let values = {};
@@ -93,6 +94,42 @@ export const stackTime = function (res: SparqlResult[]) {
     data.push({ year: Date.parse(uniq[i]) / 1000, ...values });
   }
   return data.sort((n1, n2) => n1.year - n2.year);
+};
+
+export const stackPartnerAge = function (res: any, start = 1980, end = 2022) {
+  const data = [];
+  const mainBirthdate = DateTime.fromISO(res[0].birthdate);
+  res.map((r: any, i: number) => {
+    res[i].partnerStart = DateTime.fromISO(r.start);
+    res[i].partnerEnd = DateTime.fromISO(r.end);
+    res[i].partnerBirthdate = DateTime.fromISO(r.p_birthDate);
+  });
+  console.log(res[0]);
+  for (let year = start; year < end; year++) {
+    for (let month = 1; month <= 12; month++) {
+      let timePoint = `${year}-${month}`;
+      console.log(timePoint);
+      let timePointDate = DateTime.fromObject({
+        day: 1,
+        month,
+        year,
+      });
+      let values = {};
+      console.log(timePointDate);
+      res
+        .filter(
+          (r) =>
+            r.partnerStart < timePointDate &&
+            (r.end === undefined || timePointDate < r.partnerEnd)
+        )
+        .forEach((r) => {
+          const age = timePointDate.diff(r.partnerBirthdate, "years").years;
+          values[r.search.value] = age;
+        });
+      data.push({ year: timePoint, ...values });
+    }
+  }
+  return data;
 };
 
 export const stackBarProportion = function (

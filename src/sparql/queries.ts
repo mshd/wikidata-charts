@@ -55,7 +55,7 @@ const START_TIME = "P580";
 
 const PART_OF_SERIES = "P179";
 const CAST_MEMBER = "P161";
-
+const UNMARRIED_PARTNER = "P451";
 export const COLOR_QUERY = `SELECT ?item ?itemLabel ?color ?hex WHERE {
   VALUES ?item {wd:$1}
     { ?item wdt:P465 ?hex. } 
@@ -102,6 +102,31 @@ let queries: IndicatorInfo[] = [
     },
     time: "age",
     query: superQueries.ageByEvent,
+    group: "politics",
+  },
+  {
+    code: "PARTNERS_AGE",
+    name: "Partners age",
+    props: {
+      p: UNMARRIED_PARTNER,
+      // query: "?item wdt:$s ?search.",
+      // s: "P3602",
+      // eventDate: POINT_IN_TIME,
+    },
+    time: "partner_age",
+    query: superQueries.partnersAge,
+    group: "media",
+  },
+  {
+    code: "PARTY_BY_ELECTION_CAT",
+    name: "Candidate parties by elections",
+    props: {
+      // query: "?item wdt:$s ?search.",
+      // s: "P3602",
+      // eventDate: POINT_IN_TIME,
+    },
+    time: "year",
+    query: superQueries.partyByElection,
     group: "politics",
   },
   {
