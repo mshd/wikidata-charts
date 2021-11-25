@@ -1,6 +1,4 @@
-///
 //@ts-nocheck
-
 import { DateTime } from "luxon";
 import { SparqlResult } from "./queries";
 
@@ -98,10 +96,10 @@ export const stackTime = function (res: SparqlResult[]) {
   return data.sort((n1, n2) => n1.year - n2.year);
 };
 
-export const stackPartnerAge = function (res, start = 2010, end = 2022) {
+export const stackPartnerAge = function (res: any, start = 1980, end = 2022) {
   const data = [];
   const mainBirthdate = DateTime.fromISO(res[0].birthdate);
-  res.map((r, i) => {
+  res.map((r: any, i: number) => {
     res[i].partnerStart = DateTime.fromISO(r.start);
     res[i].partnerEnd = DateTime.fromISO(r.end);
     res[i].partnerBirthdate = DateTime.fromISO(r.p_birthDate);
@@ -118,18 +116,16 @@ export const stackPartnerAge = function (res, start = 2010, end = 2022) {
       });
       let values = {};
       console.log(timePointDate);
-      let find = res.filter(
-        (r) =>
-          r.partnerStart < timePointDate && //r.end === undefined ||
-          timePointDate < r.partnerEn
-      )[0];
-      if (find) {
-        console.log(find);
-        const age = timePointDate.diff(find.partnerBirthdate, "years").years;
-        console.log(age);
-
-        values[find.search.value] = age;
-      }
+      res
+        .filter(
+          (r) =>
+            r.partnerStart < timePointDate &&
+            (r.end === undefined || timePointDate < r.partnerEnd)
+        )
+        .forEach((r) => {
+          const age = timePointDate.diff(r.partnerBirthdate, "years").years;
+          values[r.search.value] = age;
+        });
       data.push({ year: timePoint, ...values });
     }
   }

@@ -44,6 +44,8 @@ import moment from "moment";
 import useIndicatorBookmark from "../hooks/useIndicatorBookmark";
 import useSearchBookmark from "../hooks/useSearchBookmark";
 
+React.useLayoutEffect = React.useEffect;
+
 const indicatorSearchDebounce = debounce(indicatorSearch, 0);
 
 const COLORS = [

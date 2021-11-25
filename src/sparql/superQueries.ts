@@ -6,9 +6,10 @@ export const superQueries = {
   partnersAge: basicQuery(
     `
   ?search wdt:P569 ?birthDate.
-
+{
   ?search p:$p ?partnerStatement.
-  ?partnerStatement ps:$p ?partner.
+  ?partnerStatement ps:$p ?partner.} UNION {    ?search p:P26 ?partnerStatement.
+  ?partnerStatement ps:P26 ?partner.}
   ?partnerStatement pq:P580 ?start.
   OPTIONAL { ?partnerStatement pq:P582 ?end .}
 
