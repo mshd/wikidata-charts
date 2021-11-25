@@ -3,6 +3,34 @@ import { basicQuery, byYear } from "./queryHelper";
 export const superQueries = {
   // OPTIONAL { ?search wdt:P585 ?electionDate. }
   // OPTIONAL { ?search wdt:P361 ?parentElection. ?parentElection wdt:P585 ?electionDate. }
+  partnersAge: basicQuery(
+    `
+  ?search wdt:P569 ?birthDate.
+
+  ?search p:$p ?partnerStatement.
+  ?partnerStatement ps:$p ?partner.
+  ?partnerStatement pq:P580 ?start.
+  OPTIONAL { ?partnerStatement pq:P582 ?end .}
+
+    ?partner wdt:P569 ?p_birthDate.
+  `,
+    "?start ?end  ?birthDate ?p_birthDate"
+  ),
+  partyByElection: `SELECT ?search ?searchLabel (YEAR(?eventDate) as ?year) (COUNT(?item) as ?value)
+WHERE 
+{
+  VALUES ?search {wd:$1}.
+  ?election wdt:P31 wd:Q109682730. #Indonesian People's Representative Council election
+  ?election wdt:P585 ?eventDate.
+
+  ?item p:P3602 ?electionStatement.
+  ?electionStatement ps:P3602 ?election.
+  ?electionStatement pq:P102 ?search.
+
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en,id". }
+}
+
+GROUP BY ?party ?partyLabel ?eventDate ?search ?searchLabel`,
   valueByItem: basicQuery(
     `
   ?search p:$p ?statement.

@@ -23,6 +23,7 @@ import {
   stackBarProportion,
   stackFemaleProportion,
   stackMonth,
+  stackPartnerAge,
   stackTime,
   stackYear,
 } from "../src/sparql/stack";
@@ -121,6 +122,13 @@ export const MainChart: React.FC = () => {
     } else if (indicator.time == "bar") {
       data = stackBarProportion(res);
       props = getAllC(res);
+    } else if (indicator.time == "bar") {
+      data = stackBarProportion(res);
+    } else if (indicator.time == "partner_age") {
+      console.log(res);
+      data = stackPartnerAge(res);
+      console.log(data);
+      // return;
     }
 
     console.log(data);
