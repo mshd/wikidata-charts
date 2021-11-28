@@ -11,24 +11,30 @@ export async function itemSearch(
   // try {
   if (indicator && indicator.time == "time") {
     console.log(indicator);
-    const widget = await import(
-      "../sparql/properties/res/" + indicator.props.p + ".json"
-    ).then((module) => module.default);
-    const possibleResults = widget.map((x) => {
-      return {
-        label: x.item.label,
-        id: x.item.value,
-        description: x.item.description,
-        url: wbk.getSitelinkUrl({ site: "wikidata", title: x.item.value }),
-      };
-    });
-    if (!term || term.length == 0) {
-      return possibleResults;
+    try {
+      const widget = await import(
+        "../sparql/properties/res/" + indicator.props.p + ".json"
+      ).then((module) => module.default);
+      const possibleResults = widget.map((x) => {
+        return {
+          label: x.item.label,
+          id: x.item.value,
+          description: x.item.description,
+          url: wbk.getSitelinkUrl({ site: "wikidata", title: x.item.value }),
+        };
+      });
+      if (!term || term.length == 0) {
+        return possibleResults;
+      }
+      const ret = possibleResults.filter((element) =>
+        element.label.toLowerCase().includes(term.toLowerCase())
+      );
+      if (ret.length > 0) {
+        return ret;
+      }
+    } catch (e) {
+      console.log(e);
     }
-    const ret = possibleResults.filter((element) =>
-      element.label.toLowerCase().includes(term.toLowerCase())
-    );
-    return ret;
   }
   if (term.length < 3) {
     return [];
