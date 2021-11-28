@@ -1,36 +1,36 @@
 export const quantityProps = [
-  {
-    item: "http://www.wikidata.org/entity/P8687",
-    itemLabel: "social media followers",
-    itemDescription:
-      'number of subscribers on a particular social media website (use as main statement only; see P3744 instead for qualifier). Qualify with "point in time" and property for account. For Twitter, use numeric id.',
-    propContraint:
-      "http://www.wikidata.org/entity/statement/P8687-ef3a6777-4360-b411-e428-414547a0f55a",
-  },
-  {
-    item: "http://www.wikidata.org/entity/P1539",
-    itemLabel: "female population",
-    itemDescription:
-      "number of female people inhabiting the place; number of female people of subject",
-    propContraint:
-      "http://www.wikidata.org/entity/statement/P1539-C62936E0-EF14-41CF-9A19-167F7FA7C192",
-  },
-  {
-    item: "http://www.wikidata.org/entity/P1539",
-    itemLabel: "female population",
-    itemDescription:
-      "number of female people inhabiting the place; number of female people of subject",
-    propContraint:
-      "http://www.wikidata.org/entity/statement/P1539-F4E511DB-07B2-424C-88BA-A7ABDF444CB3",
-  },
-  {
-    item: "http://www.wikidata.org/entity/P1540",
-    itemLabel: "male population",
-    itemDescription:
-      "number of male people inhabiting the place; number of male people of subject",
-    propContraint:
-      "http://www.wikidata.org/entity/statement/P1540-402A68C0-838F-4C3A-A59F-EC6B88B62EE6",
-  },
+  // {
+  //   item: "http://www.wikidata.org/entity/P8687",
+  //   itemLabel: "social media followers",
+  //   itemDescription:
+  //     'number of subscribers on a particular social media website (use as main statement only; see P3744 instead for qualifier). Qualify with "point in time" and property for account. For Twitter, use numeric id.',
+  //   propContraint:
+  //     "http://www.wikidata.org/entity/statement/P8687-ef3a6777-4360-b411-e428-414547a0f55a",
+  // },
+  // {
+  //   item: "http://www.wikidata.org/entity/P1539",
+  //   itemLabel: "female population",
+  //   itemDescription:
+  //     "number of female people inhabiting the place; number of female people of subject",
+  //   propContraint:
+  //     "http://www.wikidata.org/entity/statement/P1539-C62936E0-EF14-41CF-9A19-167F7FA7C192",
+  // },
+  // {
+  //   item: "http://www.wikidata.org/entity/P1539",
+  //   itemLabel: "female population",
+  //   itemDescription:
+  //     "number of female people inhabiting the place; number of female people of subject",
+  //   propContraint:
+  //     "http://www.wikidata.org/entity/statement/P1539-F4E511DB-07B2-424C-88BA-A7ABDF444CB3",
+  // },
+  // {
+  //   item: "http://www.wikidata.org/entity/P1540",
+  //   itemLabel: "male population",
+  //   itemDescription:
+  //     "number of male people inhabiting the place; number of male people of subject",
+  //   propContraint:
+  //     "http://www.wikidata.org/entity/statement/P1540-402A68C0-838F-4C3A-A59F-EC6B88B62EE6",
+  // },
   {
     item: "http://www.wikidata.org/entity/P2135",
     itemLabel: "total exports",
@@ -45,6 +45,14 @@ export const quantityProps = [
       "total reserves comprise holdings of monetary gold, special drawing rights, reserves of IMF members held by the IMF, and holdings of foreign exchange under the control of monetary authorities",
     propContraint:
       "http://www.wikidata.org/entity/statement/P2134-EC85A308-3E19-4EA2-849B-668A088AF717",
+  },
+  {
+    item: "http://www.wikidata.org/entity/P8477",
+    itemLabel: "BTI Status Index",
+    itemDescription:
+      "measures change of countries towards democracy and market economy",
+    propContraint:
+      "http://www.wikidata.org/entity/statement/P8477-997634ef-4e79-948d-1cfd-43e6922334c1",
   },
   {
     item: "http://www.wikidata.org/entity/P2403",
@@ -82,14 +90,14 @@ export const quantityProps = [
     propContraint:
       "http://www.wikidata.org/entity/statement/P8010-bc4704e4-4b97-2a4b-f89d-fe707c147217",
   },
-  {
-    item: "http://www.wikidata.org/entity/P1538",
-    itemLabel: "number of households",
-    itemDescription:
-      "total number of households in this place, includes dwellings of all types",
-    propContraint:
-      "http://www.wikidata.org/entity/statement/P1538-FBABB683-EBE1-4DB8-B5A7-1A1811E0D1E3",
-  },
+  // {
+  //   item: "http://www.wikidata.org/entity/P1538",
+  //   itemLabel: "number of households",
+  //   itemDescription:
+  //     "total number of households in this place, includes dwellings of all types",
+  //   propContraint:
+  //     "http://www.wikidata.org/entity/statement/P1538-FBABB683-EBE1-4DB8-B5A7-1A1811E0D1E3",
+  // },
   {
     item: "http://www.wikidata.org/entity/P6753",
     itemLabel: "number of polling stations",
@@ -97,6 +105,14 @@ export const quantityProps = [
       "number of polling stations, and correspondively of electoral precincts, in certain electoral district or during certain elections",
     propContraint:
       "http://www.wikidata.org/entity/statement/P6753-c1abf218-4b69-03c9-6114-85aff0fa8cad",
+  },
+  {
+    item: "http://www.wikidata.org/entity/P10091",
+    itemLabel: "death rate",
+    itemDescription:
+      "the total number of persons dead per 1,000 population per year",
+    propContraint:
+      "http://www.wikidata.org/entity/statement/P10091-b88801ff-4b20-c6e3-8f66-e3cb7f0c31b8",
   },
   {
     item: "http://www.wikidata.org/entity/P2136",
@@ -262,6 +278,13 @@ export const quantityProps = [
     itemDescription: "number of houses in given territorial entity",
     propContraint:
       "http://www.wikidata.org/entity/statement/P4080-dfcc8892-4b4e-c750-34dc-41f07ec080ee",
+  },
+  {
+    item: "http://www.wikidata.org/entity/P8763",
+    itemLabel: "birth rate",
+    itemDescription: "the total number of live births per 1,000 population",
+    propContraint:
+      "http://www.wikidata.org/entity/statement/P8763-C7AA51B6-AA59-4F63-A26F-4DFB57D15C86",
   },
   {
     item: "http://www.wikidata.org/entity/P2131",
@@ -475,6 +498,13 @@ export const quantityProps = [
     itemDescription: "totality of wealth possessed by a person",
     propContraint:
       "http://www.wikidata.org/entity/statement/P2218-9ea1e1ba-4acd-5b1c-e2bb-5843fb86721b",
+  },
+  {
+    item: "http://www.wikidata.org/entity/P5630",
+    itemLabel: "prisoner count",
+    itemDescription: "number of inmates or prisioners held in this prison",
+    propContraint:
+      "http://www.wikidata.org/entity/statement/P5630-e74b31f3-4cee-012f-c89c-39b6c2b95622",
   },
   {
     item: "http://www.wikidata.org/entity/P6344",

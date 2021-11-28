@@ -105,6 +105,20 @@ let queries: IndicatorInfo[] = [
     group: "politics",
   },
   {
+    code: "EMPLOYEE_INMATE_RATIO",
+    name: "Staff inmate ratio by prison by month",
+    description:
+      "The number of employees per prisoner, only datapoints for coexising data (both employee & prisoner count)",
+    props: {
+      // query: "?item wdt:$s ?search.",
+      // s: "P3602",
+      // eventDate: POINT_IN_TIME,
+    },
+    time: "time",
+    group: "statistics",
+    query: superQueries.ratio,
+  },
+  {
     code: "PARTNERS_AGE",
     name: "Partners age",
     props: {

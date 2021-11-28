@@ -32,6 +32,17 @@ WHERE
 }
 
 GROUP BY ?party ?partyLabel ?eventDate ?search ?searchLabel`,
+  ratio: basicQuery(
+    `
+  ?search p:P1128 ?statementEmployees.
+  ?statementEmployees ps:P1128 ?employeeCount;
+             pq:P585 ?time.
+  ?search p:P5630 ?statement.
+  ?statement ps:P5630 ?prisonerCount;
+             pq:P585 ?time.
+  `,
+    `?time ?prisonerCount  ?employeeCount (?prisonerCount / ?employeeCount as ?value)`
+  ),
   valueByItem: basicQuery(
     `
   ?search p:$p ?statement.
