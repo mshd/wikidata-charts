@@ -1,4 +1,12 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+##
+
+The aim of this tool is to display charts of exististing data. The only data source at the moment is Wikidata.org
+
+![Image missing](/img/marketcap.png)
+
+Please select an indicator/property and then select the Items you want to display.
+
+This tool was developed using next.js and TypeScript.
 
 ## Getting Started
 
