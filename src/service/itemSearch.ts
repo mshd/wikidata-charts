@@ -1,21 +1,29 @@
-//@ts-nocheck
-import { WikidataSearchResult, searchTerm } from "./wikidataSearch";
+import { WikidataSearchResult, wikidataSearchEntities } from "@entitree/helper";
 
 import { IndicatorInfo } from "../sparql/queries";
+//@ts-ignore
 import wbk from "wikidata-sdk";
+
+type PROPERTY = {
+  item: {
+    value: string;
+    label: string;
+    description: string;
+  };
+  amount: number;
+};
 
 export async function itemSearch(
   term: string,
   indicator?: IndicatorInfo
 ): Promise<WikidataSearchResult[]> {
-  // try {
   if (indicator && indicator.time == "time") {
     console.log(indicator);
     try {
       const widget = await import(
         "../sparql/properties/res/" + indicator.props.p + ".json"
       ).then((module) => module.default);
-      const possibleResults = widget.map((x) => {
+      const possibleResults = widget.map((x: PROPERTY) => {
         return {
           label: x.item.label,
           id: x.item.value,
@@ -26,7 +34,7 @@ export async function itemSearch(
       if (!term || term.length == 0) {
         return possibleResults;
       }
-      const ret = possibleResults.filter((element) =>
+      const ret = possibleResults.filter((element: any) =>
         element.label.toLowerCase().includes(term.toLowerCase())
       );
       if (ret.length > 0) {
@@ -39,13 +47,7 @@ export async function itemSearch(
   if (term.length < 3) {
     return [];
   }
-  console.log(term);
 
-  const items = await searchTerm(term, "en");
-  // const ret = items as SearchResult[];
+  const items = await wikidataSearchEntities(term, "en");
   return items;
-  // } catch (e) {
-  //   console.error("authorsSearch", e);
-  //   throw e;
-  // }
 }

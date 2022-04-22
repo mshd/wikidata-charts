@@ -7,7 +7,7 @@ export async function indicatorSearch(
     return groupArray(queries);
   }
   if (searchTerm.length < 3) {
-    return [{ error: "Type more..." } as unknown as IndicatorInfo];
+    return [({ error: "Type more..." } as unknown) as IndicatorInfo];
   }
   try {
     const ret = queries.filter((element) => element.name.includes(searchTerm));
@@ -22,7 +22,7 @@ export function getIndicatorByKey(indicatorCode: string) {
   return queries.find((element) => element.code == indicatorCode);
 }
 
-type GROUP_OPTIONS = {
+export type GROUP_OPTIONS = {
   label: string;
   options: IndicatorInfo[];
 };

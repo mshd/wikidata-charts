@@ -1,7 +1,8 @@
 import { useEffect, useLayoutEffect } from "react";
-import { useRouter } from "next/router";
+
 import Router from "next/router";
-import { WikidataSearchResult } from "../src/service/wikidataSearch";
+import { WikidataSearchResult } from "@entitree/helper";
+import { useRouter } from "next/router";
 
 export default function useSearchBookmark(
   items: WikidataSearchResult[],

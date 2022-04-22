@@ -1,6 +1,6 @@
 import type { AppProps } from "next/app";
-import ReactGA from "react-ga";
 import { ChakraProvider } from "@chakra-ui/react";
+import ReactGA from "react-ga";
 
 ReactGA.initialize(process.env.NEXT_PUBLIC_GA_TRACKING_CODE || "placeholder", {
   testMode: !process.env.NEXT_PUBLIC_GA_TRACKING_CODE,

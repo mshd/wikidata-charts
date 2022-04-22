@@ -1,3 +1,4 @@
+//@ts-nocheck
 import {
   Bar,
   BarChart,
@@ -18,6 +19,11 @@ import {
 } from "../src/sparql/queries";
 import React, { memo, useEffect, useState } from "react";
 import {
+  WikidataSearchResult,
+  abbreviateNumber,
+  getWikidataSparql,
+} from "@entitree/helper";
+import {
   getAllC,
   stackAge,
   stackBarProportion,
@@ -31,13 +37,8 @@ import {
   getIndicatorByKey,
   indicatorSearch,
 } from "../src/service/propertySearch";
-import runSparql, {
-  WikidataSearchResult,
-  searchTerm,
-} from "../src/service/wikidataSearch";
 
 import AsyncSelect from "react-select/async";
-import { abbreviateNumber } from "../src/helper/number";
 import debounce from "debounce-promise";
 import { itemSearch } from "../src/service/itemSearch";
 import moment from "moment";
@@ -95,8 +96,8 @@ export const MainChart: React.FC = () => {
     let color: any = {};
     for (let i = 0; i < requestedIds.length; i++) {
       let id = requestedIds[i];
-      let individualRequest = await runSparql(query.replace("$1", id));
-      let colorRequest = await runSparql(COLOR_QUERY.replace("$1", id));
+      let individualRequest = await getWikidataSparql(query.replace("$1", id));
+      let colorRequest = await getWikidataSparql(COLOR_QUERY.replace("$1", id));
       console.log(colorRequest);
       color[id] = colorRequest?.[0]?.hex
         ? "#" + colorRequest[0].hex
@@ -165,7 +166,10 @@ export const MainChart: React.FC = () => {
         getOptionLabel={(indicator) => indicator.name}
         // formatOptionLabel={IndicatorOption}
         getOptionValue={(indicator) => indicator.code}
-        onChange={(indicator) => setIndicator(indicator!)}
+        onChange={(indicator) => {
+          setItems([]);
+          setIndicator(indicator!);
+        }}
         isOptionDisabled={(e) => !!e.error}
       />
       Search:{" "}

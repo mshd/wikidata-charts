@@ -1,3 +1,18 @@
+import {
+  WD_CAST_MEMBER,
+  WD_COUNTRY,
+  WD_COUNTRY_OF_ORIGIN,
+  WD_PART_OF_THE_SERIES,
+  WD_PODCAST_EPISODE,
+  WD_POINT_IN_TIME,
+  WD_POLITICAL_IDEOLOGY,
+  WD_PUBLICATION_DATE,
+  WD_SEX_OR_GENDER,
+  WD_START_TIME,
+  WD_TALK_SHOW_GUEST,
+  WD_UNMARRIED_PARTNER,
+} from "@entitree/helper";
+
 import { quantityProps } from "./properties/quantity";
 import { superQueries } from "./superQueries";
 
@@ -47,15 +62,7 @@ export type SparqlResult = {
   search?: SparqlValue;
   [key: string]: any;
 };
-const PUBLISHED_DATE = "P577";
-const TALK_SHOW_GUEST = "P5030";
-const PODCAST_EPISODE = "Q61855877";
-const POINT_IN_TIME = "P585";
-const START_TIME = "P580";
 
-const PART_OF_SERIES = "P179";
-const CAST_MEMBER = "P161";
-const UNMARRIED_PARTNER = "P451";
 export const COLOR_QUERY = `SELECT ?item ?itemLabel ?color ?hex WHERE {
   VALUES ?item {wd:$1}
     { ?item wdt:P465 ?hex. } 
@@ -69,11 +76,11 @@ export const COLOR_QUERY = `SELECT ?item ?itemLabel ?color ?hex WHERE {
 let newIdea = [
   {
     name: "podcast episodes",
-    item: PODCAST_EPISODE,
+    item: WD_PODCAST_EPISODE,
     analysis: [
       {
         name: "episode",
-        props: [PUBLISHED_DATE, TALK_SHOW_GUEST],
+        props: [WD_PUBLICATION_DATE, WD_TALK_SHOW_GUEST],
       },
     ],
   },
@@ -86,7 +93,7 @@ let queries: IndicatorInfo[] = [
       query:
         "?item p:P39 ?position. ?position pq:P2937 ?search. #parliamentiary term",
       s: "P3602",
-      eventDate: START_TIME,
+      eventDate: WD_START_TIME,
     },
     time: "age",
     query: superQueries.ageByEvent,
@@ -98,7 +105,7 @@ let queries: IndicatorInfo[] = [
     props: {
       query: "?item wdt:$s ?search.",
       s: "P3602",
-      eventDate: POINT_IN_TIME,
+      eventDate: WD_POINT_IN_TIME,
     },
     time: "age",
     query: superQueries.ageByEvent,
@@ -122,7 +129,7 @@ let queries: IndicatorInfo[] = [
     code: "PARTNERS_AGE",
     name: "Partners age",
     props: {
-      p: UNMARRIED_PARTNER,
+      p: WD_UNMARRIED_PARTNER,
       // query: "?item wdt:$s ?search.",
       // s: "P3602",
       // eventDate: POINT_IN_TIME,
@@ -147,8 +154,8 @@ let queries: IndicatorInfo[] = [
     code: "TV_EPISODES_YEARLY",
     name: "TV episodes published by year",
     props: {
-      s: PART_OF_SERIES,
-      d: PUBLISHED_DATE,
+      s: WD_PART_OF_THE_SERIES,
+      d: WD_PUBLICATION_DATE,
       i: "Q2431196", //TV episode Q21191270
     },
     time: "year",
@@ -159,9 +166,9 @@ let queries: IndicatorInfo[] = [
     code: "PODCAST_YEARLY",
     name: "podcast episodes published by year",
     props: {
-      s: PART_OF_SERIES,
-      d: PUBLISHED_DATE,
-      i: PODCAST_EPISODE,
+      s: WD_PART_OF_THE_SERIES,
+      d: WD_PUBLICATION_DATE,
+      i: WD_PODCAST_EPISODE,
     },
     time: "year",
     query: superQueries.byYear,
@@ -171,9 +178,9 @@ let queries: IndicatorInfo[] = [
     code: "PODCAST_MONTH",
     name: "podcast episodes published by month",
     props: {
-      s: PART_OF_SERIES,
-      d: PUBLISHED_DATE,
-      i: PODCAST_EPISODE,
+      s: WD_PART_OF_THE_SERIES,
+      d: WD_PUBLICATION_DATE,
+      i: WD_PODCAST_EPISODE,
     },
     time: "month",
     query: superQueries.byMonth,
@@ -183,9 +190,9 @@ let queries: IndicatorInfo[] = [
     code: "EPISODES_FEMALE_GUEST_PROP",
     name: "podcast episodes female guest proportion",
     props: {
-      s: PART_OF_SERIES,
-      i: PODCAST_EPISODE,
-      d: PUBLISHED_DATE,
+      s: WD_PART_OF_THE_SERIES,
+      d: WD_PUBLICATION_DATE,
+      i: WD_PODCAST_EPISODE,
       p: "P21",
     },
     time: "female",
@@ -196,9 +203,9 @@ let queries: IndicatorInfo[] = [
     code: "EPISODES_OCCU_GUEST_PROP",
     name: "podcast episodes guests occupation",
     props: {
-      s: PART_OF_SERIES,
-      i: PODCAST_EPISODE,
-      d: PUBLISHED_DATE,
+      s: WD_PART_OF_THE_SERIES,
+      d: WD_PUBLICATION_DATE,
+      i: WD_PODCAST_EPISODE,
       p: "P106",
     },
     time: "bar",
@@ -209,10 +216,10 @@ let queries: IndicatorInfo[] = [
     code: "EPISODES_POLITICAL_GUEST_PROP",
     name: "podcast episodes guests political",
     props: {
-      s: PART_OF_SERIES,
-      i: PODCAST_EPISODE,
-      d: PUBLISHED_DATE,
-      p: "P1142",
+      s: WD_PART_OF_THE_SERIES,
+      d: WD_PUBLICATION_DATE,
+      i: WD_PODCAST_EPISODE,
+      p: WD_POLITICAL_IDEOLOGY,
     },
     time: "bar",
     query: superQueries.byCharacteristic,
@@ -222,10 +229,10 @@ let queries: IndicatorInfo[] = [
     code: "EPISODES_GENDER_GUEST_PROP",
     name: "podcast episodes guests gender",
     props: {
-      s: PART_OF_SERIES,
-      i: PODCAST_EPISODE,
-      d: PUBLISHED_DATE,
-      p: "P21",
+      s: WD_PART_OF_THE_SERIES,
+      d: WD_PUBLICATION_DATE,
+      i: WD_PODCAST_EPISODE,
+      p: WD_SEX_OR_GENDER,
     },
     time: "bar",
     query: superQueries.byCharacteristic,
@@ -235,9 +242,9 @@ let queries: IndicatorInfo[] = [
     code: "EPISODES_CITIZEN_GUEST_PROP",
     name: "podcast episodes guests citizenship",
     props: {
-      s: PART_OF_SERIES,
-      i: PODCAST_EPISODE,
-      d: PUBLISHED_DATE,
+      s: WD_PART_OF_THE_SERIES,
+      d: WD_PUBLICATION_DATE,
+      i: WD_PODCAST_EPISODE,
       p: "P27",
     },
     time: "bar",
@@ -248,10 +255,10 @@ let queries: IndicatorInfo[] = [
     code: "PODCAST_EPISODES_AVERAGE_AGE",
     name: "podcast episodes guests average age",
     props: {
-      s: PART_OF_SERIES,
-      i: PODCAST_EPISODE,
-      d: PUBLISHED_DATE,
-      p: TALK_SHOW_GUEST,
+      s: WD_PART_OF_THE_SERIES,
+      d: WD_PUBLICATION_DATE,
+      i: WD_PODCAST_EPISODE,
+      p: WD_TALK_SHOW_GUEST,
     },
     time: "year",
     query: superQueries.avgAge,
@@ -261,9 +268,9 @@ let queries: IndicatorInfo[] = [
     code: "podcast episodes average duration",
     name: "podcast episodes average duration",
     props: {
-      s: PART_OF_SERIES,
-      i: PODCAST_EPISODE,
-      d: PUBLISHED_DATE,
+      s: WD_PART_OF_THE_SERIES,
+      d: WD_PUBLICATION_DATE,
+      i: WD_PODCAST_EPISODE,
     },
     time: "year",
     query: superQueries.avgDuration,
@@ -273,10 +280,10 @@ let queries: IndicatorInfo[] = [
     code: "TV_EPISODES_AVERAGE_AGE",
     name: "TV episodes guests average age",
     props: {
-      s: PART_OF_SERIES,
+      s: WD_PART_OF_THE_SERIES,
       i: "Q2431196", //audiovisual work
-      d: PUBLISHED_DATE,
-      p: CAST_MEMBER,
+      d: WD_PUBLICATION_DATE,
+      p: WD_CAST_MEMBER,
     },
     time: "year",
     query: superQueries.avgAge,
@@ -287,7 +294,7 @@ let queries: IndicatorInfo[] = [
     name: "books published by year by author",
     props: {
       s: "P50",
-      d: PUBLISHED_DATE,
+      d: WD_PUBLICATION_DATE,
       i: "Q7725634", //literary work
     },
     time: "year",
@@ -299,7 +306,7 @@ let queries: IndicatorInfo[] = [
     name: "scholarly article by year by author",
     props: {
       s: "P50",
-      d: PUBLISHED_DATE,
+      d: WD_PUBLICATION_DATE,
       i: "Q13442814", //scholarly article
     },
     time: "year",
@@ -311,7 +318,7 @@ let queries: IndicatorInfo[] = [
     name: "movies played in by year by actor",
     props: {
       s: "P161",
-      d: PUBLISHED_DATE,
+      d: WD_PUBLICATION_DATE,
       i: "Q11424", //film/movie
     },
     query: superQueries.byYear,
@@ -323,7 +330,7 @@ let queries: IndicatorInfo[] = [
     props: {
       s: "P17", //country
       i: "Q7944", //earthquake
-      d: POINT_IN_TIME,
+      d: WD_POINT_IN_TIME,
     },
     time: "year",
     group: "science",
@@ -333,9 +340,9 @@ let queries: IndicatorInfo[] = [
     code: "FLOODS_YEARLY",
     name: "floods by country",
     props: {
-      s: "P17", //country
+      s: WD_COUNTRY, //country
       i: "Q8068", //flood
-      d: POINT_IN_TIME,
+      d: WD_POINT_IN_TIME,
     },
     time: "year",
     group: "science",
@@ -345,9 +352,9 @@ let queries: IndicatorInfo[] = [
     code: "MOVIES_YEARLY_COUNTRY",
     name: "movies published by origin country",
     props: {
-      s: "P495", //country of origin
+      s: WD_COUNTRY_OF_ORIGIN, //country of origin
       i: "Q11424", //film
-      d: PUBLISHED_DATE,
+      d: WD_PUBLICATION_DATE,
     },
     time: "year",
     query: superQueries.byYear,
@@ -364,7 +371,7 @@ for (let i = 0; i < QUANTITY_PROPS.length; i++) {
     name: prop.itemLabel,
     description: prop.itemDescription,
     props: {
-      d: POINT_IN_TIME,
+      d: WD_POINT_IN_TIME,
       p: propId,
     },
     time: "time",
