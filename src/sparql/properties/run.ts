@@ -15,24 +15,30 @@ export async function updateSparqlItems() {
     "utf8"
   );
 
-  const props: SparqlRes[] = quantityProps; // JSON.parse(qu_file);
-  for (let i = 0; i < props.length; i++) {
-    const item = props[i].item;
-    const prop = item.split("entity/")[1];
-    const writeFile = path.resolve(
-      process.cwd(),
-      parentFolder + "res/" + prop + ".json"
-    );
-    console.log(writeFile, prop);
-    try {
-      const query = templateSparql.replaceAll("$p", prop);
-      if (!fs.existsSync(writeFile)) {
-        const res = await getWikidataSparql(query);
-        fs.writeFileSync(writeFile, JSON.stringify(res));
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+  const props: SparqlRes[] = quantityProps;
+  const excluded = [
+    "http://www.wikidata.org/entity/P1082",
+    "http://www.wikidata.org/entity/P1087",
+  ];
+  for (let prop of props) {
+    if (!excluded.includes(prop.item)) {
+      const propId = prop.item.split("entity/")[1];
+      const writeFile = path.resolve(
+        process.cwd(),
+        parentFolder + "res/" + propId + ".json"
+      );
+      console.log(writeFile, propId);
+      try {
+        const query = templateSparql.replaceAll("$p", propId);
+        if (!fs.existsSync(writeFile)) {
+          const res = await getWikidataSparql(query);
+          fs.writeFileSync(writeFile, JSON.stringify(res));
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
+      } catch (e) {
+        console.log("failed", e);
       }
-    } catch (e) {
-      console.log("failed", e);
     }
   }
+  return;
 }
