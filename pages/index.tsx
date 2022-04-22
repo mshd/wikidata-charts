@@ -22,8 +22,8 @@ const Home: NextPage = () => {
             Get started by visualizing data <code>using charts</code>
           </Text>
 
-          <SimpleGrid columns={2} spacing={10}>
-            <Box p={4} border={"1px solid #eaeaea"}>
+          <SimpleGrid columns={1} spacing={10}>
+            <Box p={4} border={"1px solid #eaeaea"} style={{fontSize:"3em"}}>
               <Link href="/chart">
                 <a>
                   <h2>Charts</h2>
@@ -32,7 +32,7 @@ const Home: NextPage = () => {
               </Link>
             </Box>
 
-            <Box p={4} border={"1px solid #eaeaea"}>
+            {/* <Box p={4} border={"1px solid #eaeaea"}>
               <Link href="/category/podcast">
                 <a>
                   <h2>🎙️ Podcasts &rarr;</h2>
@@ -55,7 +55,7 @@ const Home: NextPage = () => {
                   <p>Analyse candidate data.</p>
                 </a>
               </Link>
-            </Box>
+            </Box> */}
             {/*<a
             href="https://github.com/vercel/next.js/tree/master/examples"
           }
