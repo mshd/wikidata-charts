@@ -15,7 +15,6 @@ import {
   COLOR_QUERY,
   IndicatorInfo,
   SparqlResult,
-  queries,
 } from "../src/sparql/queries";
 import React, { memo, useEffect, useState } from "react";
 import {

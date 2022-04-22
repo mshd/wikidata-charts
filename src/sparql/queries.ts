@@ -27,13 +27,13 @@ type PROP_TYPE = {
 //   d?: string;
 // };
 export const INDICATOR_GROUPS = [
+  "statistics",
   "politics",
   "media",
   "science",
   "television",
   "podcast",
   "economy",
-  "statistics",
 ];
 export type IndicatorInfo = {
   group: string;
