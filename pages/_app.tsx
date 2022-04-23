@@ -1,5 +1,5 @@
 import type { AppProps } from "next/app";
-import { ChakraProvider } from "@chakra-ui/react";
+// import { ChakraProvider } from "@chakra-ui/react";
 import ReactGA from "react-ga4";
 
 ReactGA.initialize(process.env.NEXT_PUBLIC_GA_TRACKING_CODE || "placeholder", {
@@ -8,9 +8,9 @@ ReactGA.initialize(process.env.NEXT_PUBLIC_GA_TRACKING_CODE || "placeholder", {
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ChakraProvider>
+    // <ChakraProvider>
       <Component {...pageProps} />
-    </ChakraProvider>
+    // </ChakraProvider>
   );
 }
 

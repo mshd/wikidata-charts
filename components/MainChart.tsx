@@ -38,13 +38,12 @@ import {
 } from "../src/service/propertySearch";
 
 import AsyncSelect from "react-select/async";
+import ReactGA from "react-ga4";
 import debounce from "debounce-promise";
 import { itemSearch } from "../src/service/itemSearch";
 import moment from "moment";
 import useIndicatorBookmark from "../hooks/useIndicatorBookmark";
 import useSearchBookmark from "../hooks/useSearchBookmark";
-
-React.useLayoutEffect = React.useEffect;
 
 const indicatorSearchDebounce = debounce(indicatorSearch, 0);
 
