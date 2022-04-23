@@ -81,6 +81,15 @@ export const MainChart: React.FC = () => {
     }
     console.log("plot", items, indicator);
     const requestedIds = items.map((c) => c.id);
+    // Send a custom event
+    ReactGA.event({
+      category: "chart",
+      action: "plot_" + indicator.name,
+      label: items.map((c) => c.label).join(", "), // optional
+      // value: 99, // optional, must be a number
+      // nonInteraction: true, // optional, true/false
+      transport: "xhr", // optional, beacon/xhr/image
+    });
     let query = indicator.query;
     for (let prop_id in indicator.props) {
       console.log("prop_id", prop_id);
